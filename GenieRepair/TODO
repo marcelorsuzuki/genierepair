@@ -1,0 +1,11 @@
+TODO LIST:
+
+
+split words when there is a capital change
+
+remove slice by checking the methods source code, and not restoring old files
+
+in the failing methods pool, don1t clean every thing every time a test case session starts,
+	 just change icons to differ from failing and successful test case
+	 
+ 
