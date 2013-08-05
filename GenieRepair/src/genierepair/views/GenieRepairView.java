@@ -236,28 +236,30 @@ public class GenieRepairView extends ViewPart {
 					AddedSlices.put(sr, mi);
 					//merge
 					try {
-						FelipeDebug.debug("[GenieRepairView]: Unzipping "+eid);
+						FelipeDebug.debug(this.getClass(),"Unzipping "+eid);
 						slicerF.unzip();
-						FelipeDebug.debug("[GenieRepairView]: Unzipped");
-						FelipeDebug.debug("[GenieRepairView]: Merging "+eid);
+						FelipeDebug.debug(this.getClass(),"Unzipped");
+						FelipeDebug.debug(this.getClass(),"Merging "+eid);
 						slicerF.merge();
-						FelipeDebug.debug("[GenieRepairView]: Merged");
-						FelipeDebug.debug("[GenieRepairView]: Saving project");
+						FelipeDebug.debug(this.getClass(),"Merged");
+						FelipeDebug.debug(this.getClass(),"Saving project");
 						slicerF.saveAndRebuild();
-						FelipeDebug.debug("[GenieRepairView]: Saved");
-						FelipeDebug.debug("[GenieRepairView]: Changing method contents for "+mi);
+						FelipeDebug.debug(this.getClass(),"Saved");
+						FelipeDebug.debug(this.getClass(),"Changing method contents for "+mi);
 						slicerF.changeMethodContents(eid);
-						FelipeDebug.debug("[GenieRepairView]: Changed");
-						FelipeDebug.debug("[GenieRepairView]: Saving project");
+						FelipeDebug.debug(this.getClass(),"Changed");
+						FelipeDebug.debug(this.getClass(),"Saving project");
 						slicerF.saveAndRebuild();
-						FelipeDebug.debug("[GenieRepairView]: Saved");
-						FelipeDebug.debug("[GenieRepairView]: Running tests");
+						FelipeDebug.debug(this.getClass(),"Saved");
+						FelipeDebug.debug(this.getClass(),"Running tests");
 						slicerF.runTests();
-						FelipeDebug.debug("[GenieRepairView]: Done!");
+						FelipeDebug.debug(this.getClass(),"Done!");
 					} catch (IOException e1) {
-						FelipeDebug.errDebug("[add slice button in view (IO)]"+e1.getMessage());
+						FelipeDebug.errDebug(this.getClass(),"[add slice button in view (IO)]"+e1.getMessage());
+						e1.printStackTrace();
 					} catch (Exception e1) {
-						FelipeDebug.errDebug("[add slice button in view (General)]"+e1.getMessage());
+						FelipeDebug.errDebug(this.getClass(),"[add slice button in view (General)]"+e1.getMessage());
+						e1.printStackTrace();
 					}
 				} else {
 					showErrorMessage("The selected item is not a valid entity");

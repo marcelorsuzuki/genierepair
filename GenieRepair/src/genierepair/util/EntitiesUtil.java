@@ -14,7 +14,7 @@ public class EntitiesUtil {
 		ClassLoader cls = ClassLoader.getSystemClassLoader();
 		try {
 			String ret = result.getReturnFqn();
-			FelipeDebug.debug("trying to make a smaller name on: "+ret);
+			FelipeDebug.debug(EntitiesUtil.class,"trying to make a smaller name on: "+ret);
 			c = Class.forName(ret,false,cls);
 			FelipeDebug.debug("\t"+c.getSimpleName());
 			methodSig =methodSig.replace(ret, c.getSimpleName());
@@ -66,5 +66,7 @@ public class EntitiesUtil {
 		}
 		return ret+ "["+eid+"]";
 	}
+	
+	
 
 }

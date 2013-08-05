@@ -195,7 +195,7 @@ public class Folders {
 		IField[] tfields = t.getFields();									
 		IField[] sfields = s.getFields();
 		//process fields
-		MapProcessor<IField> mpf = new MapProcessor<IField>(sfields,tfields);
+		MapProcessor<IField> mpf = new MapProcessor<IField>(sfields,tfields,MapProcessor.Action.REPLACE);
 		//add fields
 		Map<String, IField> toaddF = mpf.getToAdd();
 		for(IField m: toaddF.values()){
@@ -207,7 +207,7 @@ public class Folders {
 		IMethod[] tmethods = t.getMethods();
 		IMethod[] smethods = s.getMethods();
 		//process methods
-		MapProcessor<IMethod> mpm = new MapProcessor<IMethod>(smethods,tmethods){
+		MapProcessor<IMethod> mpm = new MapProcessor<IMethod>(smethods,tmethods,MapProcessor.Action.REPLACE){
 			public String getName(IMethod m){
 				String ret=m.getElementName();
 				try {
@@ -239,7 +239,7 @@ public class Folders {
 		IType[] ttypes = t.getTypes();
 		IType[] stypes = s.getTypes();
 		//process types
-		MapProcessor<IType> mpt = new MapProcessor<IType>(stypes,ttypes);
+		MapProcessor<IType> mpt = new MapProcessor<IType>(stypes,ttypes,MapProcessor.Action.REPLACE);
 		//add types
 		Map<String, IType> toaddT = mpt.getToAdd();
 		for(IType m: toaddT.values()){

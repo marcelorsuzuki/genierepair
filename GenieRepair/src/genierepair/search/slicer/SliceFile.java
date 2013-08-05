@@ -35,6 +35,7 @@ import genierepair.preferences.constants.Constants;
 import genierepair.testing.FailCase;
 import genierepair.testing.GenieRepairTestRunner;
 import genierepair.testing.MyMethodInterface;
+import genierepair.util.Weaver;
 import genierepair.util.diskio.FileTree;
 import genierepair.util.diskio.Folders;
 import genierepair.util.diskio.Unzip;
@@ -128,9 +129,19 @@ public class SliceFile {
 	}
 
 	/**merge this slice with the project
-	 * @throws IOException */
-	public void merge() throws IOException {
+	 * @throws IOException 
+	 * @throws CoreException */
+	public void merge() throws IOException, CoreException {
+		Weaver w = new Weaver(javap,this.eid);
 		createAnnotation();
+		w.weave();
+		int a = 1;
+		int b = 2;
+		if(a==b-a){
+			//throw new RuntimeException("break point");
+			return;
+		}
+		
 		File target =  Folders.getSourceFolder(javap);
 		File src = new File(this.sliceSrcFolder);
 		FelipeDebug.debug("[SliceFile]: merging files:"+
@@ -155,7 +166,7 @@ public class SliceFile {
 	 * @throws Exception*/
 	public void changeMethodContents(long eid) throws Exception{
 		FelipeDebug.debug("[SliceFile]: ");
-		String annotation = Constants.SLICEANNOTATION+eid+")"+Constants.LINE;
+		String annotation = new SliceAddedAnn(eid).toString();//Constants.SLICEANNOTATION+eid+")"+Constants.LINE;
 		//find mi in the java project
 		IType t = javap.findType(mi.getParentsName());
 		t.getCompilationUnit().createImport(Constants.getAnnotationFQN(), null, null);
@@ -221,7 +232,8 @@ public class SliceFile {
 		FelipeDebug.debug("looking for the method to be called... "+target.getElementName()+"."+methodName);
 
 		//find the method that will be replaced
-		FelipeDebug.debug("find the method that will be replaced...");
+		FelipeDebug.debug(getClass(),"trying to find the method that will be replaced...("+methodName+")");
+		FelipeDebug.debug(getClass(),"target is: "+target);		
 		IMethod[] allmethods = target.getMethods();
 		Set<IMethod> sameNameMethods = new HashSet<IMethod>();
 		for(IMethod m: allmethods){
@@ -383,7 +395,7 @@ public class SliceFile {
 		runTests();
 		return true;
 	}
-
+	
 	protected void createAnnotation() throws IOException{
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		String pkgName = store.getString(PreferenceConstants.ANNOTATIONPACKAGE);
@@ -412,6 +424,14 @@ public class SliceFile {
 		}
 		OpenOption options= StandardOpenOption.WRITE;
 		Files.write(javaFile.toPath(), sourceCode.getBytes(), options);
+	}
+	
+
+
+	public void cleanFolder() throws IOException {
+		Folders.removeSourcePath(sliceSrcFolder, javap);
+		Folders.removeSourcePath(sliceBkpFolder, javap);
+		
 	}
 
 }

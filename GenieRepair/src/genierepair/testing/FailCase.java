@@ -102,7 +102,6 @@ public class FailCase {
 		SolrQueryCreator sqc = new SolrQueryCreator(mi,true);
 		String solrQuery = sqc.getSolrQuery();
 		mi.setSolrQuery(solrQuery);
-		FelipeDebug.debug(solrQuery);
 		SourcererSolrQuery ssq = new SourcererSolrQuery(solrQuery);
 		List<SingleResult> results = ssq.makeQuery();
 		//TODO REMOVE
@@ -112,7 +111,7 @@ public class FailCase {
 			long neweid = MySQLQuery.query(MySQLQuery.fixSolr(sr.getFqn(), sr.getParams()));
 			MySingleResult msr = new MySingleResult(sr,neweid);
 			updatedResults.add(msr);
-			FelipeDebug.debug("\t"+msr);
+			//FelipeDebug.debug("\t"+msr);
 		}
 		//add it to SolrPool
 		SolrResultPool.add(mi,updatedResults);
@@ -130,10 +129,10 @@ public class FailCase {
 				stack.push(((ExpressionStatement)o).getExpression());//in case of a ascendent search for the variable
 			}else if(o instanceof VariableDeclarationStatement){
 				stack.push(((VariableDeclarationStatement)o));
-				/*
+				
 				FelipeDebug.errDebug( 
 						"Sorry this tool doesnt support this sentence yet:\n"+o);
-				
+				/*
 				VariableDeclarationStatement var = (VariableDeclarationStatement)o;
 				Iterator<VariableDeclarationFragment> varFragments = var.fragments().iterator();
 				while(varFragments.hasNext()){
@@ -250,7 +249,6 @@ public class FailCase {
 						SimpleName simpleName = eachfrag.getName();
 						Expression init = eachfrag.getInitializer();
 						if(init!=null && false){
-							//TODO
 							//MyMethodInterface intrfce = getMethodinterface(init,rturn);
 							//return intrfce;
 						} 

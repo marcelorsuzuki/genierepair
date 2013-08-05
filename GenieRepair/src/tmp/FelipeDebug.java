@@ -10,6 +10,14 @@ public class FelipeDebug {
 		if(print) printf(string);
 	}
 	
+	public static void debug(Class<?> o, String string) {
+		if(print) printf("["+o.getSimpleName()+"]: "+string);
+	}
+	
+	public static void errDebug(Class<?> o, String string) {
+		if(print) errDebug("["+o.getSimpleName()+"]: "+string);
+	}
+	
 	public static void debug(Object[] o){
 		for(Object o2:o){
 			debug(o2);
@@ -43,6 +51,10 @@ public class FelipeDebug {
 
 	private static void printErr(String string) {
 		System.err.println(string);
+	}
+	
+	public static void TODO(){
+		throw new RuntimeException("NOT IMPLEMENTED YET");
 	}
 
 }

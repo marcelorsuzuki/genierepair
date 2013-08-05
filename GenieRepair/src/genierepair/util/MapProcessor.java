@@ -9,34 +9,38 @@ import org.eclipse.jdt.core.JavaModelException;
 import tmp.FelipeDebug;
 
 public  class MapProcessor<T extends IMember> {
-	
-	
+
+	public static enum Action {REPLACE, KEEP};
 
 	private HashMap<String, T> toAdd = new HashMap<String, T>();
 
 	/**if the @param target contains one element in @param source, then renames it*/
-	public MapProcessor(T[] source, T[] target){
+	public MapProcessor(T[] source, T[] target, Action a){
 		HashMap<String, T> tfieldmap = new HashMap<String,T>();
 		for(T f : target){
 			tfieldmap.put(getName(f), f);
 		}
 		toAdd = new HashMap<String,T>();
 		for(T f : source){
-			toAdd.put(getName(f), f);
 			if(tfieldmap.containsKey(getName(f))){
 				//rename
-				T f1 = tfieldmap.get(getName(f));
-				equalsAction(f,f1);
+				if(a.equals(Action.REPLACE)){
+					toAdd.put(getName(f), f);
+					T f1 = tfieldmap.get(getName(f));
+					equalsAction(f,f1);
+				}
+			} else {
+				toAdd.put(getName(f), f);
 			}
 		}
 	}
-	
+
 	public Map<String, T> getToAdd(){return toAdd;}
-	
+
 	public String getName(T t){
 		return t.getElementName();
 	}
-	
+
 	public void equalsAction(T src, T target){
 		try {
 			target.rename("original_copy_"+target.getElementName(), false, null);
