@@ -18,7 +18,7 @@ public class RelatedWordPool {
 	private static Map<String,Set<Term>> pool= new HashMap<String,Set<Term>>();
 
 
-
+	/**retuns a set with related terms to the given @param word*/
 	public static Set<Term> getTerms(String word){
 		if(!pool.containsKey(word)){
 			FelipeDebug.debug("[RelatedWordPool]: adding "+word);
@@ -27,8 +27,9 @@ public class RelatedWordPool {
 		return pool.get(word);
 	}
 
+	/**retuns an Array with related terms to the given @param word*/
 	public Term[] toArray(String word){
-		Set<Term> set = pool.get(word);
+		Set<Term> set = getTerms(word);
 		Term[] array = new Term[set.size()];
 		Iterator<Term> it = set.iterator();
 		for(int i=0;it.hasNext();++i){
