@@ -1,6 +1,6 @@
-package genierepair.util;
+package genierepair.search.slicer;
 
-import genierepair.search.slicer.SliceAddedAnn;
+import genierepair.util.MapProcessor;
 import genierepair.util.diskio.Folders;
 import genierepair.views.GRProgressMonitor;
 

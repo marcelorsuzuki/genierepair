@@ -35,7 +35,6 @@ import genierepair.preferences.constants.Constants;
 import genierepair.testing.FailCase;
 import genierepair.testing.GenieRepairTestRunner;
 import genierepair.testing.MyMethodInterface;
-import genierepair.util.Weaver;
 import genierepair.util.diskio.FileTree;
 import genierepair.util.diskio.Folders;
 import genierepair.util.diskio.Unzip;
@@ -383,6 +382,7 @@ public class SliceFile {
 
 
 	private boolean remove() throws IOException {
+		/*
 		//get relative locations
 		String projectSourceFolder = Folders.getSourceFolder(javap).getCanonicalPath();
 		//build directory tree
@@ -391,6 +391,14 @@ public class SliceFile {
 		FileTree slicesrc = new FileTree(sliceSrcFolder);
 		//remove and restore data
 		FileTree.startRemoving(src,slicesrc,bkp);
+		*/
+		Unweaver un = new Unweaver(javap,eid);
+		try {
+			un.unweave(mi);
+		} catch (CoreException e) {
+			e.printStackTrace();
+			return false;
+		}
 		saveAndRebuild();
 		runTests();
 		return true;
