@@ -2,20 +2,16 @@ package genierepair.search.slicer;
 
 import genierepair.util.MapProcessor;
 import genierepair.util.diskio.Folders;
-import genierepair.views.GRProgressMonitor;
 
 import java.io.File;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IBuffer;
-import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IInitializer;
 import org.eclipse.jdt.core.IJavaElement;
@@ -24,14 +20,12 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.ISourceRange;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
 import tmp.FelipeDebug;
 
-public class Weaver {
+public class Weaver extends AbstractProjectEditor {
 
-	private IJavaProject javap;
 	private Long sliceID;
 	private IPackageFragmentRoot source;
 	private IPackageFragmentRoot sliceSrc;
@@ -41,10 +35,7 @@ public class Weaver {
 		this.sliceID =sliceID;
 		this.resolveSourceFolder();
 	}
-
-
-
-
+	
 	private void resolveSourceFolder(){
 		try {
 			for(IPackageFragmentRoot r :javap.getAllPackageFragmentRoots()){//for each package
@@ -58,57 +49,10 @@ public class Weaver {
 		}
 	}
 
-	protected void excludeFromBuilding(long eid) throws CoreException {
-		FelipeDebug.debug(getClass(), "excluding "+eid+"from build path");
-		IProject myPrj = javap.getProject();
-		IFolder mySlicedFolder = myPrj.getFolder(File.separator+Folders.SLICE+File.separator+eid);
-		IClasspathEntry srcEntry = JavaCore.newSourceEntry(mySlicedFolder.getFullPath());
-		IClasspathEntry[] cpe = new IClasspathEntry[javap.getRawClasspath().length-1];
-		IClasspathEntry[] all = javap.getRawClasspath();
-		int count = 0;
-		for(int i=0;i<all.length;i++){
-			if(!all[i].getPath().equals(srcEntry.getPath())){
-				cpe[count]=all[i];
-				count++;
-			}
-		}
-		javap.setRawClasspath(cpe,null);
-		mySlicedFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
-		saveAndRebuild();
-	}
-
-	protected void includeInBuilding(long id) throws CoreException {
-		FelipeDebug.debug(getClass(), "adding "+id+"to build path");
-		IProject myPrj = javap.getProject();
-		IFolder mySlicedFolder = myPrj.getFolder(File.separator+Folders.SLICE+File.separator+id);
-		IClasspathEntry srcEntry = JavaCore.newSourceEntry(mySlicedFolder.getFullPath());
-		IClasspathEntry[] cpe = new IClasspathEntry[javap.getRawClasspath().length+1];
-		for(int i = 0; i < javap.getRawClasspath().length; i++)
-			cpe[i] = javap.getRawClasspath()[i];
-		cpe[javap.getRawClasspath().length] = srcEntry;
-		javap.setRawClasspath(cpe, null);
-		mySlicedFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
-		saveAndRebuild();
-		resolveIncludedSlice();
-	}
-
-	public void saveAndRebuild() {
-		try {
-			GRProgressMonitor monitor = new GRProgressMonitor();
-			javap.getProject().refreshLocal(IProject.DEPTH_INFINITE, null);
-			javap.save(null, true);
-			javap.getProject().refreshLocal(IProject.DEPTH_INFINITE, null);
-			javap.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-			javap.getProject().refreshLocal(IProject.DEPTH_INFINITE, monitor);
-			GRProgressMonitor.waitMonitor(monitor);
-		} catch (Exception e) {
-			FelipeDebug.debug(e.getLocalizedMessage());
-		}
-
-	}
 
 	public boolean weave() throws CoreException{
 		includeInBuilding(sliceID);
+		this.resolveIncludedSlice();
 		//create annotation
 		SliceAddedAnn ann = new SliceAddedAnn(sliceID);
 		//get packages
@@ -119,12 +63,12 @@ public class Weaver {
 				continue;
 			}
 			//parts[0] is the project name
-			//parts[1] is the slice folder
-			//parts[3] is the entityID folder
-			//parts[4] is the src folder inside the entityID folder
+			//parts[1] is the slice projectFolder
+			//parts[3] is the entityID projectFolder
+			//parts[4] is the src projectFolder inside the entityID projectFolder
 			//parts[5] and after are packages name
 			String pckName = "";//parts[4];
-			String fix = Folders.SRC_NAME+".";//the src folder doesnot contain a subfoldar src
+			String fix = Folders.SRC_NAME+".";//the src projectFolder doesnot contain a subfoldar src
 			for(int l=5; l < parts.length; l++)
 				if(pckName.equals("")){
 					pckName=parts[l];
@@ -152,7 +96,7 @@ public class Weaver {
 						.getResource().getFullPath().removeFirstSegments(1); 
 				IFile myFile = javap.getProject()
 						.getFile(theFolderPath + File.separator + res[j].getName());
-				//insert annotation into class and copy it to the source folder
+				//insert annotation into class and copy it to the source projectFolder
 				if(!myFile.exists()){
 					//get original content
 					IBuffer originalContent = sliceSrc.getPackageFragment(fix+pckName).getCompilationUnit(myFile.getName()).getBuffer();
@@ -268,22 +212,23 @@ public class Weaver {
 	}
 
 
-	/**resolves the included slice folder*/
-	private void resolveIncludedSlice() throws JavaModelException {
-		for(IPackageFragmentRoot r :javap.getAllPackageFragmentRoots()){//for each package
-			if(r.getKind()==IPackageFragmentRoot.K_SOURCE){
-				if(r.getElementName().equals(sliceID.toString())){//verify if it is a source package
-					this.sliceSrc = r;
-					break;
+	/**resolves the included slice projectFolder*/
+	private void resolveIncludedSlice() {
+		try {
+			for(IPackageFragmentRoot r :javap.getAllPackageFragmentRoots()){//for each package
+				if(r.getKind()==IPackageFragmentRoot.K_SOURCE){
+					if(r.getElementName().equals(sliceID.toString())){//verify if it is a source package
+						this.sliceSrc = r;
+						break;
+					}
 				}
 			}
+		} catch (JavaModelException e) {
+			e.printStackTrace();
 		}
 	}
+	
 
-	public boolean changeMethodContents(){
-		FelipeDebug.TODO();
-		return false;
-	}
 
 
 

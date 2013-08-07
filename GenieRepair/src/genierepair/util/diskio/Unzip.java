@@ -22,7 +22,7 @@ public class Unzip {
 	 /**
      * Unzip it
      * @param zipFile input zip file
-     * @param output zip file output folder
+     * @param output zip file output projectFolder
      */
     public void unzip(){
  
@@ -50,7 +50,7 @@ public class Unzip {
            FelipeDebug.debug("file unzip : "+ newFile.getAbsoluteFile());
  
             //create all non exists folders
-            //else you will hit FileNotFoundException for compressed folder
+            //else you will hit FileNotFoundException for compressed projectFolder
             new File(newFile.getParent()).mkdirs();
  
             FileOutputStream fos = new FileOutputStream(newFile);             

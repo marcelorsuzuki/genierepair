@@ -54,7 +54,7 @@ public class MySingleResult{
 		String params = sr.getParams();
 		long eid = newID;
 		
-		return ret+" "+fqn+"("+params+") ["+eid+"]";
+		return ret+" "+fqn+params+ "["+eid+"]";
 	}
 
 	public SingleResult getSingleResult() {

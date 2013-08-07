@@ -36,7 +36,7 @@ public class EntitiesUtil {
 					if(methodSig.contains(classes[i]))
 						methodSig =methodSig.replace(classes[i], c.getSimpleName());
 				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				
 			}

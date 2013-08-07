@@ -236,29 +236,29 @@ public class GenieRepairView extends ViewPart {
 					AddedSlices.put(sr, mi);
 					//merge
 					try {
-						FelipeDebug.debug(this.getClass(),"Unzipping "+eid);
+						FelipeDebug.debug(GenieRepairView.this.getClass(),"Unzipping "+eid);
 						slicerF.unzip();
-						FelipeDebug.debug(this.getClass(),"Unzipped");
-						FelipeDebug.debug(this.getClass(),"Merging "+eid);
+						FelipeDebug.debug(GenieRepairView.this.getClass(),"Unzipped");
+						FelipeDebug.debug(GenieRepairView.this.getClass(),"Merging "+eid);
 						slicerF.merge();
-						FelipeDebug.debug(this.getClass(),"Merged");
-						FelipeDebug.debug(this.getClass(),"Saving project");
+						FelipeDebug.debug(GenieRepairView.this.getClass(),"Merged");
+						FelipeDebug.debug(GenieRepairView.this.getClass(),"Saving project");
 						slicerF.saveAndRebuild();
-						FelipeDebug.debug(this.getClass(),"Saved");
-						FelipeDebug.debug(this.getClass(),"Changing method contents for "+mi);
+						FelipeDebug.debug(GenieRepairView.this.getClass(),"Saved");
+						FelipeDebug.debug(GenieRepairView.this.getClass(),"Changing method contents for "+mi);
 						slicerF.changeMethodContents(eid);
-						FelipeDebug.debug(this.getClass(),"Changed");
-						FelipeDebug.debug(this.getClass(),"Saving project");
+						FelipeDebug.debug(GenieRepairView.this.getClass(),"Changed");
+						FelipeDebug.debug(GenieRepairView.this.getClass(),"Saving project");
 						slicerF.saveAndRebuild();
-						FelipeDebug.debug(this.getClass(),"Saved");
-						FelipeDebug.debug(this.getClass(),"Running tests");
+						FelipeDebug.debug(GenieRepairView.this.getClass(),"Saved");
+						FelipeDebug.debug(GenieRepairView.this.getClass(),"Running tests");
 						slicerF.runTests();
-						FelipeDebug.debug(this.getClass(),"Done!");
+						FelipeDebug.debug(GenieRepairView.this.getClass(),"Done!");
 					} catch (IOException e1) {
-						FelipeDebug.errDebug(this.getClass(),"[add slice button in view (IO)]"+e1.getMessage());
+						FelipeDebug.errDebug(GenieRepairView.this.getClass(),"[add slice button in view (IO)]"+e1.getMessage());
 						e1.printStackTrace();
 					} catch (Exception e1) {
-						FelipeDebug.errDebug(this.getClass(),"[add slice button in view (General)]"+e1.getMessage());
+						FelipeDebug.errDebug(GenieRepairView.this.getClass(),"[add slice button in view (General)]"+e1.getMessage());
 						e1.printStackTrace();
 					}
 				} else {

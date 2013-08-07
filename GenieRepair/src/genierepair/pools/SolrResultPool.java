@@ -46,7 +46,7 @@ public class SolrResultPool{
 		for(int i=0;i<len;++i){
 			if(!l2.contains(l.get(i))) {
 				l2.add(l.get(i));
-				FelipeDebug.debug("\n[SolrResultPool]:\t "+l.get(i));
+				FelipeDebug.debug(SolrResultPool.class,l.get(i)+"");
 			}
 		}
 	}

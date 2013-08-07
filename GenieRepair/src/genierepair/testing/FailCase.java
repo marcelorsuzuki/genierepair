@@ -17,6 +17,7 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
@@ -94,7 +95,7 @@ public class FailCase {
 		//get statements stack, create MethodInterface and show it...
 		Deque<ASTNode> stack =this.getStack(lookingMethod); 
 		MyMethodInterface mi = getMethodInterfaceOnAssert(stack,0);
-		FelipeDebug.debug("found method: "+mi);
+		FelipeDebug.debug(getClass(),"found method: "+mi);
 		if(SolrResultPool.getContents(mi)!=null){//this method interface is already in the pool
 			return;
 		}
@@ -116,6 +117,9 @@ public class FailCase {
 		//add it to SolrPool
 		SolrResultPool.add(mi,updatedResults);
 		this.mi=mi;
+		//add parents info
+		IType parent = project.findType(mi.getParentsName());
+		mi.setParent(parent);
 
 	}
 
