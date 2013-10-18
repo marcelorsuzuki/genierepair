@@ -16,7 +16,9 @@ Import-Package: org.eclipse.jdt.junit,
  org.eclipse.jdt.junit.launcher,
  org.eclipse.jdt.junit.model,
  org.eclipse.jdt.launching,
- org.eclipse.pde.ui.launcher
+ org.eclipse.jface.text,
+ org.eclipse.pde.ui.launcher,
+ org.eclipse.ui.texteditor
 Bundle-ClassPath: lib/sourcerer-search.jar,
  .,
  lib/,

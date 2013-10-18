@@ -41,15 +41,20 @@ public class FailThread extends Thread{
 	}
 
 	public void run(){
+	  int sleeps = 0;
 		while(!toWork.isEmpty()){
 			FelipeDebug.debug("Starting work...");
 			ITestCaseElement testCase = getWork();
 			FelipeDebug.debug((testCase==null?"no job, waiting":"starting..."));
 			if(testCase==null){
 				try {
+				  if(sleeps>=10){
+				    continue;
+				  }
+				  ++sleeps;
 					Thread.sleep(timeToSleep);
 				} catch (InterruptedException e) {}
-				continue;
+				  continue;
 			}
 			IJavaProject project = testCase.getTestRunSession().getLaunchedProject();
 			//resolve class, method and package names

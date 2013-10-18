@@ -98,7 +98,7 @@ public class JUnitListener extends TestRunListener {
 	}
 	
 	public static boolean isReady(){
-		return ft.isDone();
+		return true;
 	}
 	
 	
