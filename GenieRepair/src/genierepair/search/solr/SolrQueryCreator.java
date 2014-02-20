@@ -1,5 +1,6 @@
 package genierepair.search.solr;
 
+import genierepair.Activator;
 import genierepair.search.relatedwords.Term;
 import genierepair.testing.MyMethodInterface;
 
@@ -10,16 +11,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jface.preference.IPreferenceStore;
+
+import br.unifesp.ppgcc.sourcereraqe.domain.Expander;
+import br.unifesp.ppgcc.sourcereraqe.infrastructure.SourcererQueryBuilder;
+
 import tmp.FelipeDebug;
 
 import genierepair.pools.RelatedWordPool;
+import genierepair.preferences.PreferenceConstants;
 import genierepair.preferences.constants.Solr;
 
 public class SolrQueryCreator {
-	private Set<String> returnType;//the return type, for example "String" or "void" or "MyClass1"
+	/*private Set<String> returnType;//the return type, for example "String" or "void" or "MyClass1"
 	private Set<String> fqnContentsClass;
 	private Set<String> fqnContentsMethod;
 	private Map<String,Set<String>> fqnParamsContents;
+	*/
+	private String extQuery;
 
 	private static final boolean relatedReturnType = true;
 	private static final boolean relatedParams = true;
@@ -30,6 +40,7 @@ public class SolrQueryCreator {
 	/**Constructs a Solr Query based on @param mi*/
 	public SolrQueryCreator(MyMethodInterface mi){
 		//get key words...return type, clazz name, method name and params types
+		/*
 		String ret = mi.getReturnType().getName();
 		String clazz = mi.getParentsName();
 		if(clazz.contains(".")){
@@ -51,18 +62,53 @@ public class SolrQueryCreator {
 			fqnParamsContents.put(s, new HashSet<String>());
 			fqnParamsContents.get(s).add(s);
 		}
+		*/
+		//
+		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+		String url = store.getString(PreferenceConstants.RELATED_WORD_SERVER)+"/related-words-service"; 
+		String expanders = "";
+		boolean worldnet = true, code=true,type=true;
+		if(worldnet)expanders+=","+Expander.WORDNET_EXPANDER;
+		if(code)expanders+=","+Expander.CODE_VOCABULARY_EXPANDER;
+		if(type)expanders+=","+Expander.TYPE_EXPANDER;
+		if(expanders!=""){
+			expanders=expanders.substring(1);//remove first comma
+		}
+		SourcererQueryBuilder sqb;
+		FelipeDebug.debug(getClass(), "using related words service url = "+url);
+		try {
+			sqb = new SourcererQueryBuilder(url,expanders,true,true);
+			//query[2],query[3],query[4]//method name, return type, params type
+			String param="";
+			for(ITypeBinding t : mi.getParamsType()){
+				param+=","+t.getName();
+			}
+			param = param.trim();
+			if("".equalsIgnoreCase(param)){
+				param="void";
+			}
+			FelipeDebug.debug(getClass(), "method name="+mi.getMethodName());
+			FelipeDebug.debug(getClass(), "return type="+mi.getReturnType().getName());
+			FelipeDebug.debug(getClass(), "params=     "+param);
+			extQuery = sqb.getSourcererExpandedQuery(mi.getMethodName(),mi.getReturnType().getName(),param.substring(1));
+		} catch (Exception e) {
+			FelipeDebug.debug(getClass(),e.getMessage());
+			extQuery = "";
+		}
+		FelipeDebug.debug(getClass(), "extQuery = "+extQuery);
 
 	}
 
 	/**Constructs a Solr Query based on @param mi, and it's related words if @param relatedWords is true*/
 	public SolrQueryCreator(MyMethodInterface mi, boolean relatedWords) {
 		this(mi);
+		/*
 		if(relatedWords){
 			putRelatedWords();
-		}
+		}*/
 	}
 
-
+/*
 	private void putRelatedWords() {
 		//all the sets in this class have one item.
 		String retType = returnType.iterator().next();
@@ -133,8 +179,10 @@ public class SolrQueryCreator {
 	public void setFqnClass(Set<String> fqn){
 		fqnContentsClass = fqn;
 	}
-
+*/
 	public String getFqn(){
+		return this.extQuery;
+		/*
 		StringBuilder ret = new StringBuilder("((");
 		//put all the classes names
 		for (Iterator<String> it = fqnContentsClass.iterator();it.hasNext();){
@@ -163,9 +211,9 @@ public class SolrQueryCreator {
 						+" "+Solr.sname         +": "+contents+" )"; 
 		FelipeDebug.debug("[SolrQueryCreator]: fqn condition is:\n\t"+retret);
 		return retret;
-	
+		*/
 	}
-
+/*
 	public String getParams(){
 		if(fqnParamsContents!=null && fqnParamsContents.size()>0){
 			StringBuilder ret = new StringBuilder("(");
@@ -192,8 +240,10 @@ public class SolrQueryCreator {
 		}
 		return "";
 	}
-
+*/
 	public String getSolrQuery(){
+		return this.extQuery;
+		/*
 		String params = this.getParams();
 		if(params!=null){
 			params=Solr.AND+params;
@@ -204,6 +254,7 @@ public class SolrQueryCreator {
 		if(s.contains("[")) s = s.replace("[", "\\[");
 		if(s.contains("]")) s = s.replace("]", "\\]");
 		return s;
+		*/
 	}
 
 

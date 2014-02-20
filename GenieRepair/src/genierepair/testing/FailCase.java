@@ -109,8 +109,9 @@ public class FailCase {
 		//update its ID...
 		List<MySingleResult> updatedResults = new ArrayList<MySingleResult>();
 		for(SingleResult sr : results){
-			long neweid = MySQLQuery.query(MySQLQuery.fixSolr(sr.getFqn(), sr.getParams()));
-			MySingleResult msr = new MySingleResult(sr,neweid);
+//			long neweid = MySQLQuery.query(MySQLQuery.fixSolr(sr.getFqn(), sr.getParams()));
+			//MySingleResult msr = new MySingleResult(sr,neweid);
+			MySingleResult msr = new MySingleResult(sr,sr.getEntityID());
 			updatedResults.add(msr);
 			//FelipeDebug.debug("\t"+msr);
 		}

@@ -11,7 +11,7 @@ Require-Bundle: org.eclipse.ui,
  org.junit;bundle-version="4.10.0",
  org.eclipse.search
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.jdt.junit,
  org.eclipse.jdt.junit.launcher,
  org.eclipse.jdt.junit.model,
@@ -22,4 +22,6 @@ Import-Package: org.eclipse.jdt.junit,
 Bundle-ClassPath: lib/sourcerer-search.jar,
  .,
  lib/,
+ lib/aqe.jar,
+ lib/commons-lang-2.6.jar,
  lib/mysql-connector-java-5.1.7-bin.jar

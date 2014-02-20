@@ -81,5 +81,6 @@ public class Activator extends AbstractUIPlugin implements IStartup {
 	public void earlyStartup() {
 		TestRunListener listener = new JUnitListener();
 		JUnitCore.addTestRunListener(listener);
+		
 	}
 }
